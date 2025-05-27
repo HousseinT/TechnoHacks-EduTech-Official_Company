@@ -10,7 +10,6 @@ Authentication Page is a modern, secure, and SEO-friendly user authentication sy
 
 - **Secure User Registration** - Email validation and strong password requirements enhance user data security
 - **JWT Authentication** - Robust token-based authentication for secure user sessions and access control
-- **Google OAuth Integration** - Streamlined one-click sign-in using Google accounts for improved user convenience
 - **Password Recovery System** - Efficient forgot password functionality with email-based reset links
 - **Protected Routes** - Secure routing to restrict access to authenticated users only
 - **Responsive Design** - Mobile-first approach with a clean, modern UI for optimal experience on any device
@@ -90,7 +89,7 @@ Authentication Page is a modern, secure, and SEO-friendly user authentication sy
 1. **Clone the repository**:
 
    ```bash
-   git clone https://github.com/yourusername/auth-page.git
+   git clone https://github.com/HousseinT/TechnoHacks-EduTech-Official_Company.git
    cd auth-page
    ```
 
