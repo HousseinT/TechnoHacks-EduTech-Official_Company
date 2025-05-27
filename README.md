@@ -56,6 +56,7 @@ Authentication Page is a modern, secure, and SEO-friendly user authentication sy
 ## Tech Stack
 
 ### Frontend Technologies
+
 - **React 18** - Powerful JavaScript library for building dynamic user interfaces
 - **TypeScript** - Static typing for enhanced code quality and maintainability
 - **React Router v7** - Declarative routing within the single-page application
@@ -66,6 +67,7 @@ Authentication Page is a modern, secure, and SEO-friendly user authentication sy
 - **Vite** - Next-generation frontend tooling for fast development
 
 ### Backend Technologies
+
 - **Node.js with Express** - Fast, minimalist web framework
 - **MongoDB with Mongoose** - NoSQL database with elegant object modeling
 - **JWT Authentication** - Secure and stateless authentication
@@ -86,17 +88,20 @@ Authentication Page is a modern, secure, and SEO-friendly user authentication sy
 ### Frontend Setup Instructions
 
 1. **Clone the repository**:
+
    ```bash
    git clone https://github.com/yourusername/auth-page.git
    cd auth-page
    ```
 
 2. **Install frontend dependencies**:
+
    ```bash
    npm install
    ```
 
 3. **Configure Google OAuth for Development**:
+
    - Create a project in the [Google Cloud Console](https://console.cloud.google.com/)
    - Enable the Google People API and Google+ API
    - Create OAuth 2.0 Client IDs in "APIs & Services" > "Credentials"
@@ -108,6 +113,7 @@ Authentication Page is a modern, secure, and SEO-friendly user authentication sy
      ```
 
 4. **Start the frontend development server**:
+
    ```bash
    npm run dev
    ```
@@ -120,16 +126,19 @@ Authentication Page is a modern, secure, and SEO-friendly user authentication sy
 ### Backend Setup Instructions
 
 1. **Navigate to the server directory**:
+
    ```bash
    cd server
    ```
 
 2. **Install backend dependencies**:
+
    ```bash
    npm install
    ```
 
 3. **Configure environment variables**:
+
    - Create a `.env` file based on `.env.example`:
      ```bash
      cp .env.example .env
@@ -146,10 +155,12 @@ Authentication Page is a modern, secure, and SEO-friendly user authentication sy
 ### Authentication Flow
 
 1. **User Registration**: Create a new account by:
+
    - Providing name, email, and password (minimum 8 characters)
    - Using the "Sign in with Google" button for quick registration
 
 2. **User Login**: Access your account by:
+
    - Entering email and password
    - Using the "Sign in with Google" option
 
@@ -161,22 +172,24 @@ Authentication Page is a modern, secure, and SEO-friendly user authentication sy
 
 ```tsx
 // src/utils/ProtectedRoute.tsx
-import React from 'react';
-import { useAuth } from '../context/AuthContext';
+import React from "react";
+import { useAuth } from "../context/AuthContext";
 
-const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const { isAuthenticated, isLoading } = useAuth();
-  
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
-  
+
   if (!isAuthenticated) {
     // Redirect to login
-    window.location.pathname = '/login';
+    window.location.pathname = "/login";
     return null;
   }
-  
+
   return <>{children}</>;
 };
 
@@ -187,12 +200,12 @@ export default ProtectedRoute;
 
 ```tsx
 // Example of using the auth context in a component
-import React from 'react';
-import { useAuth } from '../context/AuthContext';
+import React from "react";
+import { useAuth } from "../context/AuthContext";
 
 const ProfileComponent: React.FC = () => {
   const { user, logout } = useAuth();
-  
+
   return (
     <div>
       <h2>Welcome, {user?.name}</h2>
@@ -208,24 +221,28 @@ const ProfileComponent: React.FC = () => {
 ### Authentication Endpoints
 
 #### Register User
+
 - **URL**: `/api/auth/register`
 - **Method**: `POST`
 - **Body**: `{ name, email, password }`
 - **Response**: `{ user, token }`
 
 #### Login User
+
 - **URL**: `/api/auth/login`
 - **Method**: `POST`
 - **Body**: `{ email, password }`
 - **Response**: `{ user, token }`
 
 #### Forgot Password
+
 - **URL**: `/api/auth/forgot-password`
 - **Method**: `POST`
 - **Body**: `{ email }`
 - **Response**: `{ message }`
 
 #### Reset Password
+
 - **URL**: `/api/auth/reset-password`
 - **Method**: `POST`
 - **Body**: `{ token, password }`
@@ -234,6 +251,7 @@ const ProfileComponent: React.FC = () => {
 ### User Endpoints
 
 #### Get User Profile
+
 - **URL**: `/api/users/profile`
 - **Method**: `GET`
 - **Headers**: `Authorization: Bearer {token}`
