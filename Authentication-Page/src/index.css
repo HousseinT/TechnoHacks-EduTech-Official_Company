@@ -1,0 +1,94 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  body {
+    @apply bg-gray-50;
+  }
+}
+
+@layer components {
+  .auth-card {
+    @apply w-full bg-white/90 p-8 rounded-2xl shadow-soft-xl border border-gray-200/50 transition-all duration-300 backdrop-blur-sm;
+  }
+  
+  .auth-card:hover {
+    @apply backdrop-blur-none;
+  }
+  
+  .auth-title {
+    @apply text-2xl font-bold text-gray-900 mb-2;
+  }
+  
+  .auth-subtitle {
+    @apply text-gray-600;
+  }
+  
+  .auth-input {
+    @apply w-full px-4 py-3 bg-white border rounded-xl shadow-sm transition-all focus:ring-2 focus:outline-none focus:border-primary-500 focus:ring-primary-500/20;
+  }
+  
+  .auth-button-primary {
+    @apply bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-700 hover:to-primary-600 text-white focus:ring-primary-500 focus:ring-offset-0;
+  }
+  
+  .auth-button-secondary {
+    @apply bg-gradient-to-r from-secondary-600 to-secondary-500 hover:from-secondary-700 hover:to-secondary-600 text-white focus:ring-secondary-500 focus:ring-offset-0;
+  }
+  
+  .auth-link {
+    @apply text-primary-600 font-medium hover:text-primary-800 transition-colors;
+  }
+  
+  /* Animations */
+  .animate-fade-in {
+    animation: fade-in 0.5s ease-in-out;
+  }
+  
+  .animate-blob {
+    animation: blob 7s infinite;
+  }
+  
+  .animation-delay-2000 {
+    animation-delay: 2s;
+  }
+  
+  .animation-delay-4000 {
+    animation-delay: 4s;
+  }
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes blob {
+  0% {
+    transform: translate(0px, 0px) scale(1);
+  }
+  33% {
+    transform: translate(30px, -50px) scale(1.1);
+  }
+  66% {
+    transform: translate(-20px, 20px) scale(0.9);
+  }
+  100% {
+    transform: translate(0px, 0px) scale(1);
+  }
+}
