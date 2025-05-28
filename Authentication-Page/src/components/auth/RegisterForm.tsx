@@ -9,6 +9,7 @@ const RegisterForm: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [registerSuccess, setRegisterSuccess] = useState(false);
   
   // Form errors
   const [nameError, setNameError] = useState('');
@@ -68,9 +69,16 @@ const RegisterForm: React.FC = () => {
     
     try {
       await register(name, email, password);
-      // Navigate to login page after successful registration
-      window.history.pushState({}, '', '/login');
-      window.dispatchEvent(new CustomEvent('pathChanged'));
+      // Set registration success state to true
+      setRegisterSuccess(true);
+      
+      // Reset success message after 5 seconds
+      setTimeout(() => {
+        setRegisterSuccess(false);
+        // Navigate to login page after successful registration
+        window.history.pushState({}, '', '/login');
+        window.dispatchEvent(new CustomEvent('pathChanged'));
+      }, 5000);
     } catch (err) {
       // Error is handled in the auth context
     }
@@ -78,6 +86,20 @@ const RegisterForm: React.FC = () => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
+      {registerSuccess && (
+        <div className="p-5 bg-gradient-to-r from-primary-500 to-secondary-500 text-white rounded-xl text-center shadow-soft-xl animate-fade-in overflow-hidden relative">
+          <div className="absolute -top-10 -left-10 w-40 h-40 bg-white/10 rounded-full animate-blob"></div>
+          <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-white/10 rounded-full animate-blob animation-delay-2000"></div>
+          <div className="relative z-10 flex items-center justify-center">
+            <svg className="w-6 h-6 mr-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M20 6L9 17L4 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            <span className="text-lg font-semibold">Registration Successful</span>
+          </div>
+          <p className="text-sm mt-1 text-white/80 relative z-10">Your account has been created</p>
+        </div>
+      )}
+      
       {error && (
         <div className="p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm shadow-sm animate-fade-in">
           {error}
