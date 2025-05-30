@@ -60,6 +60,41 @@ export const api = {
   },
   
   /**
+   * Google authentication
+   */
+  googleAuth: async (credential: string) => {
+    try {
+      // In a real application, you would send the credential to your backend
+      // For this demo, we'll simulate a successful response
+      
+      // Simulate API call delay
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      // Parse the JWT token to extract user information
+      // Note: In a real app, token verification should happen on the server
+      const tokenParts = credential.split('.');
+      if (tokenParts.length !== 3) {
+        throw new Error('Invalid token format');
+      }
+      
+      // Decode the payload (second part of the JWT)
+      const payload = JSON.parse(atob(tokenParts[1].replace(/-/g, '+').replace(/_/g, '/')));
+      
+      // Return simulated successful response
+      return {
+        user: {
+          id: payload.sub || Math.random().toString(36).substr(2, 9),
+          name: payload.name || 'Google User',
+          email: payload.email || 'user@example.com',
+        },
+        token: credential,
+      };
+    } catch (error) {
+      throw error;
+    }
+  },
+  
+  /**
    * Request password reset
    */
   requestPasswordReset: async (email: string) => {

@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, memo, useCallback } from "react";
+import { useGoogleLogin } from '@react-oauth/google';
 import { useAuth } from "../../context/AuthContext";
 import Button from "../common/Button";
 import Input from "../common/Input";
@@ -11,9 +12,10 @@ const LoginForm: React.FC = () => {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [loginSuccess, setLoginSuccess] = useState(false);
-  const { login, isLoading, error, clearError } = useAuth();
+  const [googleError, setGoogleError] = useState("");
+  const { login, loginWithGoogle, isLoading, error, clearError } = useAuth();
 
-  const validateForm = () => {
+  const validateForm = useCallback(() => {
     let valid = true;
 
     // Reset errors
@@ -37,9 +39,9 @@ const LoginForm: React.FC = () => {
     }
 
     return valid;
-  };
+  }, [email, password, clearError]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!validateForm()) return;
@@ -52,6 +54,9 @@ const LoginForm: React.FC = () => {
       // Reset success message after 5 seconds
       setTimeout(() => {
         setLoginSuccess(false);
+        // Navigate to dashboard after successful login
+        window.history.pushState({}, '', '/dashboard');
+        window.dispatchEvent(new CustomEvent('pathChanged'));
       }, 5000);
       
       return {
@@ -61,27 +66,64 @@ const LoginForm: React.FC = () => {
     } catch (err) {
       // Error is handled in the auth context
     }
-  };
+  }, [login, email, password, validateForm]);
+
+  // Google login handler
+  const handleGoogleLogin = useGoogleLogin({
+    onSuccess: async (response) => {
+      try {
+        setGoogleError('');
+        // The response contains an access token that we can use to get user info
+        await loginWithGoogle(response.access_token);
+        
+        // Set login success state to true
+        setLoginSuccess(true);
+        
+        // Reset success message after 5 seconds
+        setTimeout(() => {
+          setLoginSuccess(false);
+          // Navigate to dashboard after successful login
+          window.history.pushState({}, '', '/dashboard');
+          window.dispatchEvent(new CustomEvent('pathChanged'));
+        }, 5000);
+      } catch (err) {
+        setGoogleError(err instanceof Error ? err.message : 'Google authentication failed');
+      }
+    },
+    onError: (errorResponse) => {
+      setGoogleError('Google sign-in failed. Please try again.');
+      console.error('Google Sign-In Error:', errorResponse);
+    },
+  });
+
+  // Optimized success message component
+  const SuccessMessage = loginSuccess ? (
+    <div className="p-5 bg-gradient-to-r from-primary-500 to-secondary-500 text-white rounded-xl text-center shadow-soft-xl animate-fade-in overflow-hidden relative">
+      <div className="absolute -top-10 -left-10 w-40 h-40 bg-white/10 rounded-full animate-blob"></div>
+      <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-white/10 rounded-full animate-blob animation-delay-2000"></div>
+      <div className="relative z-10 flex items-center justify-center">
+        <svg className="w-6 h-6 mr-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M20 6L9 17L4 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+        <span className="text-lg font-semibold">Login Successful</span>
+      </div>
+      <p className="text-sm mt-1 text-white/80 relative z-10">You are now signed in</p>
+    </div>
+  ) : null;
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
-      {loginSuccess && (
-        <div className="p-5 bg-gradient-to-r from-primary-500 to-secondary-500 text-white rounded-xl text-center shadow-soft-xl animate-fade-in overflow-hidden relative">
-          <div className="absolute -top-10 -left-10 w-40 h-40 bg-white/10 rounded-full animate-blob"></div>
-          <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-white/10 rounded-full animate-blob animation-delay-2000"></div>
-          <div className="relative z-10 flex items-center justify-center">
-            <svg className="w-6 h-6 mr-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M20 6L9 17L4 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-            <span className="text-lg font-semibold">Login Successful</span>
-          </div>
-          <p className="text-sm mt-1 text-white/80 relative z-10">You are now signed in</p>
-        </div>
-      )}
+      {SuccessMessage}
       
       {error && (
         <div className="p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm shadow-sm animate-fade-in">
           {error}
+        </div>
+      )}
+
+      {googleError && (
+        <div className="p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm shadow-sm animate-fade-in">
+          {googleError}
         </div>
       )}
 
@@ -132,7 +174,8 @@ const LoginForm: React.FC = () => {
         <div className="flex justify-center mt-4">
           <button
             type="button"
-            onClick={() => window.alert("Google login coming soon!")}
+            onClick={() => handleGoogleLogin()}
+            disabled={isLoading}
             className="flex items-center justify-center w-64 px-6 py-3 border border-gray-300 rounded-xl shadow-sm bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-0 transition-all duration-200 hover:shadow-md"
           >
             <svg
@@ -166,4 +209,4 @@ const LoginForm: React.FC = () => {
   );
 };
 
-export default LoginForm;
+export default memo(LoginForm);

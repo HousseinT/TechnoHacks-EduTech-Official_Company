@@ -13,6 +13,7 @@
     "test:coverage": "jest --coverage"
   },
   "dependencies": {
+    "@react-oauth/google": "^0.12.2",
     "caniuse-lite": "^1.0.30001718",
     "lucide-react": "^0.344.0",
     "mongodb": "^6.16.0",

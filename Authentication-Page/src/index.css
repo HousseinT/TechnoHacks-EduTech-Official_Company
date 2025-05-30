@@ -19,6 +19,7 @@
 @layer components {
   .auth-card {
     @apply w-full bg-white/90 p-8 rounded-2xl shadow-soft-xl border border-gray-200/50 transition-all duration-300 backdrop-blur-sm;
+    will-change: transform, opacity;
   }
   
   .auth-card:hover {
@@ -52,10 +53,12 @@
   /* Animations */
   .animate-fade-in {
     animation: fade-in 0.5s ease-in-out;
+    will-change: opacity, transform;
   }
   
   .animate-blob {
-    animation: blob 7s infinite;
+    animation: blob 10s infinite;
+    will-change: transform;
   }
   
   .animation-delay-2000 {
@@ -79,16 +82,13 @@
 }
 
 @keyframes blob {
-  0% {
+  0%, 100% {
     transform: translate(0px, 0px) scale(1);
   }
   33% {
-    transform: translate(30px, -50px) scale(1.1);
+    transform: translate(20px, -30px) scale(1.05);
   }
   66% {
-    transform: translate(-20px, 20px) scale(0.9);
-  }
-  100% {
-    transform: translate(0px, 0px) scale(1);
+    transform: translate(-15px, 15px) scale(0.95);
   }
 }

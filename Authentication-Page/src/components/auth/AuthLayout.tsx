@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { ArrowLeft } from "lucide-react";
 import { Link } from "../common/Link";
 
@@ -23,13 +23,14 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({
   showBackLink = false,
 }) => {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-r from-primary-50 via-white to-secondary-50 animate-gradient-x p-4 relative">
-      {/* Background patterns */}
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-r from-primary-50 via-white to-secondary-50 p-4 relative">
+      {/* Background patterns - optimized */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute inset-0 z-0 bg-auth-pattern opacity-30"></div>
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary-400 to-secondary-400"></div>
-        <div className="fixed -top-24 -right-24 w-96 h-96 bg-primary-200 rounded-full mix-blend-multiply filter blur-3xl opacity-100 animate-blob"></div>
-        <div className="fixed -bottom-24 -left-24 w-96 h-96 bg-secondary-200 rounded-full mix-blend-multiply filter blur-3xl opacity-100 animate-blob animation-delay-2000"></div>
+        {/* Reduced number of animated elements */}
+        <div className="fixed -top-24 -right-24 w-96 h-96 bg-primary-200 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob"></div>
+        <div className="fixed -bottom-24 -left-24 w-96 h-96 bg-secondary-200 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-2000"></div>
       </div>
 
       <div className="w-full max-w-md relative z-10">
@@ -63,7 +64,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({
           </Link>
         )}
 
-        <div className="auth-card hover:shadow-soft-xl hover:scale-[1.01]">
+        <div className="auth-card">
           <div className="mb-6 text-center">
             <h1 className="auth-title">{title}</h1>
             <p className="auth-subtitle">{subtitle}</p>
@@ -85,4 +86,5 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({
   );
 };
 
-export default AuthLayout;
+// Use React.memo to prevent unnecessary re-renders
+export default memo(AuthLayout);

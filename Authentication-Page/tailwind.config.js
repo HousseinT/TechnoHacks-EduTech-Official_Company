@@ -81,4 +81,8 @@ export default {
     },
   },
   plugins: [],
+  // Add performance optimizations
+  future: {
+    hoverOnlyWhenSupported: true,
+  },
 };

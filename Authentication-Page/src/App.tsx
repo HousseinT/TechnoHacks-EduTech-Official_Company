@@ -1,10 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { AuthProvider } from './context/AuthContext';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import Dashboard from './pages/Dashboard';
-import ForgotPassword from './pages/ForgotPassword';
-import ProtectedRoute from './utils/ProtectedRoute';
+
+// Lazy load components
+const Login = lazy(() => import('./pages/Login'));
+const Register = lazy(() => import('./pages/Register'));
+const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
+const Dashboard = lazy(() => import('./pages/Dashboard'));
+const ProtectedRoute = lazy(() => import('./utils/ProtectedRoute'));
+
+// Loading component
+const LoadingFallback = () => (
+  <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-primary-50 via-white to-secondary-50">
+    <div className="w-16 h-16 border-4 border-primary-400 border-t-transparent rounded-full animate-spin"></div>
+  </div>
+);
 
 function App() {
   const [currentPath, setCurrentPath] = useState(window.location.pathname);
@@ -48,7 +57,9 @@ function App() {
 
   return (
     <AuthProvider>
-      {renderRoute()}
+      <Suspense fallback={<LoadingFallback />}>
+        {renderRoute()}
+      </Suspense>
     </AuthProvider>
   );
 }

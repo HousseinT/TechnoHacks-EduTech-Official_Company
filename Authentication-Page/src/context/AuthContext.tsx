@@ -15,6 +15,7 @@ type AuthContextType = {
   error: string | null;
   register: (name: string, email: string, password: string) => Promise<void>;
   login: (email: string, password: string) => Promise<void>;
+  loginWithGoogle: (credential: string) => Promise<void>;
   logout: () => void;
   clearError: () => void;
 };
@@ -27,6 +28,7 @@ const AuthContext = createContext<AuthContextType>({
   error: null,
   register: async () => {},
   login: async () => {},
+  loginWithGoogle: async () => {},
   logout: () => {},
   clearError: () => {},
 });
@@ -115,6 +117,38 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  // Google login function
+  const loginWithGoogle = async (credential: string) => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      
+      // Call the API service to authenticate with Google
+      const response = await api.googleAuth(credential);
+      
+      // Create user from the response
+      const googleUser = {
+        id: response.user?.id || Math.random().toString(36).substr(2, 9),
+        name: response.user?.name || 'Google User',
+        email: response.user?.email || 'user@example.com',
+      };
+      
+      // Save token if provided
+      if (response.token) {
+        localStorage.setItem('token', response.token);
+      }
+      
+      // Save to local storage
+      localStorage.setItem('user', JSON.stringify(googleUser));
+      setUser(googleUser);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Google authentication failed');
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   // Logout function
   const logout = () => {
     localStorage.removeItem('user');
@@ -136,6 +170,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         error,
         register,
         login,
+        loginWithGoogle,
         logout,
         clearError,
       }}
